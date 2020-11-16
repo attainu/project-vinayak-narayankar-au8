@@ -4,9 +4,10 @@ import pathlib
 # welcome screen
 
 print("\n\nWELCOME TO OUR PARKING LOT \n\n")
-print("(If you want to see the commands to use the lot \
-then type 'instructions' and press ENTER)\n\n")
+print("(If you want to see the commands to use the lot then type 'instructions' and press ENTER)\n\n")  # noqa
 print("Please choose a mode\n")
+
+# here we choose interactive mode or file read mode
 
 
 def choosemode():
@@ -15,18 +16,30 @@ def choosemode():
 
     print("Press 2 and ENTER if you want to READ INPUT FROM A FILE")
     modeinput = input()
-    if modeinput[0] == "1":
-        mode = 1
 
-    elif modeinput[0] == "2":
-        mode = 2
-    else:
+    if modeinput == "" or modeinput == " ":
         print("Please choose a correct mode")
         choosemode()
+    elif modeinput == "instructions":
+        abpath = str(pathlib.Path(__file__).parent.absolute())
+        filepath = abpath.replace("\\", "/") + "/"+"instructions.txt"
+        file = open(filepath, "r")
+        for line in file:
+            print(line)
+        print()
+        choosemode()
+    else:
+        if modeinput[0] == "1":
+            mode = 1
+
+        elif modeinput[0] == "2":
+            mode = 2
+        else:
+            print("Please choose a correct mode")
+            choosemode()
 
 
 # This variable stays true until user types exit on the console
-
 programIsRunning = True
 lotexists = False
 programOn = True
@@ -62,6 +75,7 @@ class ParkingLot:
                 return
         else:
             print("Parking Lot is full, No space to park")
+            print("You can add extra slots to the lot, see instructions for details")  # noqa
 
     # function for sorting the cars based on their colors
     def sortoncolor(self, car):
@@ -143,6 +157,7 @@ class ParkingLot:
             print("No cars found with this color")
         print()
 
+    # function that prints the current status of parkinglot
     def status(self):
         for i in range(len(self.lot)):
             if self.lot[i] != 0:
@@ -151,6 +166,50 @@ class ParkingLot:
                       "car with REG NO.", self.lot[i].regNo)
             else:
                 print("SLOT NO.", i+1, "is empty")
+
+    # check the format of registration number
+
+    def checkregno(self, regno):
+        arr = regno.split("-")
+        checkstring = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        checknum = "1234567890"
+        if len(arr) != 4:
+            return False
+        else:
+            if len(arr[0]) == 2:
+
+                for char in arr[0]:
+                    if char not in checkstring:
+                        return False
+            else:
+                return False
+            if len(arr[1]) == 2:
+
+                for char in arr[1]:
+                    if char not in checknum:
+                        return False
+            else:
+                return False
+
+            if len(arr[2]) <= 2:
+                for char in arr[2]:
+                    if char not in checkstring:
+                        return False
+            else:
+                return False
+
+            if len(arr[3]) <= 4:
+                for char in arr[3]:
+                    if char not in checknum:
+                        return False
+            else:
+                return False
+        return True
+
+    # adds extra slots
+    def addslot(self, size):
+        for _ in range(size):
+            self.lot.append(0)
 
 
 # function that takes user input string and split \
@@ -191,8 +250,7 @@ def inputcommand(command):
     # Prompts user to enter some command if the user leaves the console empty
     if command[0] == "":
         print()
-        print("Please enter some command, View Instructions to\
-check the commands that are supported\n")
+        print("Please enter some command, View Instructions to check the commands that are supported\n")  # noqa
 
     # this runs if user inputs for creating a parking lot
     elif command[0] == "create_parking_lot":
@@ -201,18 +259,13 @@ check the commands that are supported\n")
         #  if yes then will prompt user to not go ahead
         if parkinglot is not None:
             print(
-                "There already exists a parking lot, doing this will erase all \
-data on current lot\nPlease exit this program\
-and restart to create a new one")
+                "There already exists a parking lot, doing this will erase all data on current lot\nPlease exit this program and restart to create a new one")  # noqa
             print()
         # checking if the size field is empty
         else:
             # checks if the user has entered all the parameters
             if len(command) < 2 or command[1] == "":
-                print("You have not entered a size for our parking lot, If \
-you hit enter a default lot with size 6 will be created\n \
-OR type the size you want and hit enter to \
-create a lot with desried size\n")
+                print("You have not entered a size for our parking lot, If you hit enter a default lot with size 6 will be created\n OR type the size you want and hit enter to create a lot with desried size\n")  # noqa
                 print("Waiting for your Response")
                 response = input()
                 # if user doesnt enter any size,\
@@ -228,10 +281,9 @@ create a lot with desried size\n")
 
                 else:
                     print(
-                        "Seems like you have not entered a correct format of size\
-, Please use whole integers as size. TRY AGAIN\n")
+                        "Seems like you have not entered a correct format of size, Please use whole integers as size. TRY AGAIN\n")  # noqa
             # if user enters all fields correctly then lot is created
-            elif type(int(command[1])) == int:
+            elif command[1].isdecimal():
                 parkinglot = ParkingLot(int(command[1]))
 
                 print("Paking Lot with size", command[1], "has been created\n")
@@ -239,8 +291,7 @@ create a lot with desried size\n")
             #  he will be prompted to try again
             else:
                 print(
-                    "Looks like you have entered wrong format for size of parking \
-lot, please enter a whole integer and try again")
+                    "Looks like you have entered wrong format for size of parking lot, please enter a whole integer and try again")  # noqa
         print()
 
     # command to park the car
@@ -249,23 +300,23 @@ lot, please enter a whole integer and try again")
         # checks if a parking lot exists or not
         if parkinglot is None:
             print(
-                "There is no Parking Lot, Cannot perform any \
-other operation without creating a parking lot\n")
+                "There is no Parking Lot, Cannot perform any other operation without creating a parking lot\n")  # noqa
         else:
             # checks if command has all arguments
             if len(command) < 3:
                 print(
-                    "Park Command requires you to put Registration number and \
-color of the car,\n Please Enter them and TRY AGAIN")
+                    "Park Command requires you to put Registration number and color of the car,\n Please Enter them and TRY AGAIN")  # noqa
 
             else:
                 if command[2] == "":
                     print(
-                        "Not entered a color for you car, \
-Please enter a color and TRY AGAIN")
+                        "Not entered a color for you car, Please enter a color and TRY AGAIN")  # noqa
                 else:
-                    car = Car(command[1], command[2].lower())
-                    parkinglot.park(car)
+                    if parkinglot.checkregno(command[1]):
+                        car = Car(command[1], command[2].lower())
+                        parkinglot.park(car)
+                    else:
+                        print("The format of registration number is wrong, please try again")  # noqa
         print()
 
     # command to leave or empty a slot
@@ -274,19 +325,16 @@ Please enter a color and TRY AGAIN")
 
         if parkinglot is None:
             print(
-                "There is no Parking Lot, Cannot perform any other\
-operation without creating a parking lot\n")
+                "There is no Parking Lot, Cannot perform any other operation without creating a parking lot\n")  # noqa
         else:
             if len(command) < 2 or command[1] == "":
                 print(
-                    "Leave command takes a slot number, Please\
-enter slot number and try again")
+                    "Leave command takes a slot number, Please enter slot number and try again")  # noqa
             else:
-                if type(int(command[1])) == int:
+                if command[1].isdecimal():
                     parkinglot.takeout(int(command[1]))
                 else:
-                    print("The slot number should be an \
-integer, Please Try again")
+                    print("The slot number should be an integer, Please Try again")  # noqa
 
         print()
 
@@ -296,8 +344,7 @@ integer, Please Try again")
 
         if parkinglot is None:
             print(
-                "There is no Parking Lot, Cannot perform any other \
-operation without creating a parking lot\n")
+                "There is no Parking Lot, Cannot perform any other operation without creating a parking lot\n")  # noqa
         else:
             parkinglot.status()
 
@@ -309,13 +356,11 @@ operation without creating a parking lot\n")
 
         if parkinglot is None:
             print(
-                "There is no Parking Lot, Cannot perform any other \
-operation without creating a parking lot\n")
+                "There is no Parking Lot, Cannot perform any other operation without creating a parking lot\n")  # noqa
         else:
             if len(command) < 2 or command[1] == "":
                 print(
-                    "Please enter a color to search for,\
-Enter the color and try again\n")
+                    "Please enter a color to search for,Enter the color and try again\n")  # noqa
             else:
                 parkinglot.regnooncolor(command[1].lower())
         print()
@@ -326,13 +371,11 @@ Enter the color and try again\n")
 
         if parkinglot is None:
             print(
-                "There is no Parking Lot, Cannot perform any \
-other operation without creating a parking lot\n")
+                "There is no Parking Lot, Cannot perform any other operation without creating a parking lot\n")  # noqa
         else:
             if len(command) < 2 or command[1] == "":
                 print(
-                    "Please enter a color to search for, \
-Enter the color and try again\n")
+                    "Please enter a color to search for, Enter the color and try again\n")  # noqa
             else:
                 parkinglot.slotoncolor(command[1].lower())
         print()
@@ -343,16 +386,16 @@ Enter the color and try again\n")
 
         if parkinglot is None:
             print(
-                "There is no Parking Lot, Cannot perform any other \
-operation without creating a parking lot\n")
+                "There is no Parking Lot, Cannot perform any other operation without creating a parking lot\n")  # noqa
         else:
             if len(command) < 2 or command[1] == "":
                 print(
-                    "Please enter a color to search for, \
-Enter the color and try again\n")
+                    "Please enter a color to search for, Enter the color and try again\n")  # noqa
             else:
                 parkinglot.searchonregno(command[1])
         print()
+
+    # exits the program
 
     elif command[0] == "exit":
         global programOn
@@ -361,20 +404,38 @@ Enter the color and try again\n")
         programOn = False
         print()
 
-        # if user enters some unknown command
+    # adds extra slots to the parking lot
+
+    elif command[0] == "addslots":
+        print()
+        if parkinglot is None:
+            print(
+                "There is no Parking Lot, Cannot perform any other operation without creating a parking lot\n")  # noqa
+        else:
+            if len(command) < 2 or command[1] == "" or command[1] == " ":
+                print("Add slots takes integer number of slots to be added, Please enter the command correctly and try again")  # noqa
+            else:
+                if command[1].isdecimal():
+                    parkinglot.addslot(int(command[1]))
+                    print("Successfully added", command[1], "slots")
+                else:
+                    print("Add slots takes integer number of slots to be added, Please enter the command correctly and try again")  # noqa
+        print()
+
+    # prints instructions on console
+    elif command[0] == "instructions":
+        print()
+        abpath = str(pathlib.Path(__file__).parent.absolute())
+        filepath = abpath.replace("\\", "/") + "/"+"instructions.txt"
+        file = open(filepath, "r")
+        for line in file:
+            print(line)
+        print()
+
+    # if user enters some unknown command
     else:
         print()
-        print("The command you entered is not found , please enter \
-the commands in our program\n Read \
-instructions to see the commands present")
-
-
-# insturctions for using our program
-
-def instructions():
-
-    print()
-    print("FOLLOWING ARE THE COMMANDS OFFERED BY OUR PROGRAM")
+        print("The command you entered is not found , please enter the commands in our program\n Read instructions to see the commands present")  # noqa
 
 
 if __name__ == "__main__":
