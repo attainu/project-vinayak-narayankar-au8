@@ -1,10 +1,11 @@
 import pathlib
-
+import datetime
 
 # welcome screen
 
 print("\n\nWELCOME TO OUR PARKING LOT \n\n")
 print("(If you want to see the commands to use the lot then type 'instructions' and press ENTER)\n\n")  # noqa
+print("We charge based on seconds, 1 Rs for 2 seconds is our current price")
 print("Please choose a mode\n")
 
 # here we choose interactive mode or file read mode
@@ -48,12 +49,11 @@ mode = 0
 
 
 class Car:
-    initiated = False
 
     def __init__(self, regNo, color):
         self.regNo = regNo
         self.color = color
-        self.initiated = True
+        self.parkedtime = ""
 
 
 # our class for parking lot
@@ -72,6 +72,7 @@ class ParkingLot:
                 self.lot[i] = car
                 self.sortoncolor(car)
                 print("Alloted slot number :", i+1)
+                car.parkedtime = datetime.datetime.now()
                 return
         else:
             print("Parking Lot is full, No space to park")
@@ -102,11 +103,20 @@ class ParkingLot:
             return
         if self.lot[slot-1] != 0:
             currentcar = self.lot[slot-1]
+            currentime = datetime.datetime.now()
+            timestayed = self.timepassed(currentcar.parkedtime, currentime)
+            cost = timestayed.seconds//2
             self.lot[slot-1] = 0
             self.colorbasedsort[currentcar.color].remove(currentcar.regNo)
+            print("You have been charged", "Rs.", cost)
             print("Slot no", slot, "is now free")
         else:
             print("Slot is already empty, there is no car at this spot")
+
+    def timepassed(self, parked, leaving):
+        second_elapsed = leaving - parked
+
+        return second_elapsed
 
     # function for searching slot number of a car based on its reg no
 

@@ -2,7 +2,7 @@ PARKING LOT
 
 Description: An Console based app to handle incoming, exiting, grouping of cars in a linear parking lot with fixed slots
 
-External packages used is null.
+Have used inbuilt, pathlib and datetime module from python
 
 The code is completely written in a modular way which is easily customisable
 
@@ -61,4 +61,6 @@ Extra features:
 
     1. User can increase the size of the parking lot after creating the parking lot
     2. This has a special check for format of registration numbers provided by user. If the reg no is not in given format, the program throws an error
+    3. The program registers entry time and exit time of a vehicle and charges accordingly on the time vehicle spent in the lot,
+    for demo purpose price is set to 1 Rs for 2 seconds
     3. Program is pretty self explanatory, User can read insturction on the program anytime
