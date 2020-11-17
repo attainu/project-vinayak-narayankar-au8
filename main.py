@@ -238,7 +238,15 @@ def main(mode):
         command = takeInput()
         inputcommand(command)
     if mode == 2:
-        filename = input("Enter file name: ")
+        def getfilename():
+            given = input("Enter the file name: ")
+            if given == "" or given == " ":
+                print("Please Enter a file name to continue: ")
+                return getfilename()
+            else:
+                return given
+
+        filename = getfilename()
         abpath = str(pathlib.Path(__file__).parent.absolute())
         filepath = abpath.replace("\\", "/") + "/"+filename
         if os.path.exists(filepath):
@@ -255,7 +263,7 @@ def main(mode):
                 print("File not found")
                 choosemode()
         else:
-            print("The File name you entered does not exist, please retry\n")
+            print("\nThe File name you entered does not exist, please retry\n")
             choosemode()
 
 
