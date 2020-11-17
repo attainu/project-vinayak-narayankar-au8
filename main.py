@@ -1,5 +1,6 @@
 import pathlib
 import datetime
+import os
 
 # welcome screen
 
@@ -240,16 +241,21 @@ def main(mode):
         filename = input("Enter file name: ")
         abpath = str(pathlib.Path(__file__).parent.absolute())
         filepath = abpath.replace("\\", "/") + "/"+filename
-        file = open(filepath, "r")
-        if file:
+        if os.path.exists(filepath):
 
-            for line in file:
+            file = open(filepath, "r")
+            if file:
 
-                command = line.rstrip()
-                commandsplit = command.split(" ")
-                inputcommand(commandsplit)
+                for line in file:
+
+                    command = line.rstrip()
+                    commandsplit = command.split(" ")
+                    inputcommand(commandsplit)
+            else:
+                print("File not found")
+                choosemode()
         else:
-            print("File not found")
+            print("The File name you entered does not exist, please retry\n")
             choosemode()
 
 
@@ -280,11 +286,11 @@ def inputcommand(command):
                 response = input()
                 # if user doesnt enter any size,\
                 #  a default lot with size 6 is created
-                if response == "":
+                if response == "" or response == " ":
                     parkinglot = ParkingLot()
                     print("Paking Lot with size 6 has been created\n ")
                 # if user enters a size the lot is created
-                elif type(response) == int:
+                elif response.isdecimal():
                     parkinglot = ParkingLot(int(response))
                     print("Paking Lot with size",
                           response, "has been created\n ")
@@ -400,7 +406,7 @@ def inputcommand(command):
         else:
             if len(command) < 2 or command[1] == "":
                 print(
-                    "Please enter a color to search for, Enter the color and try again\n")  # noqa
+                    "Please enter a registration number to search for, Enter the number and try again\n")  # noqa
             else:
                 parkinglot.searchonregno(command[1])
         print()
